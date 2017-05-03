@@ -1,0 +1,235 @@
+# this is an example of the Price API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: Price API
+  description: Price API
+  version: "v1"
+# the domain of the service
+host: api.apigee.com
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /{brand}/itinerary/{itineraryId}/price/:
+    get:
+      summary: Price information
+      description: |
+        The Price API endpoint returns best price of itinerary for every cruise  
+      parameters:
+        - name: country
+          in: header
+          description: Mandatory country parameter #Sample value US.
+          required: true
+          type: string
+          format: string
+        - name: locale
+          in: header
+          description: Mandatory locale parameter #Sample value en_us.
+          required: true
+          type: string
+          format: string
+        - name: brand
+          in: path
+          description: Mandatory brand parameter #Sample value HAL.
+          required: true
+          type: string
+          format: string
+        - name: itineraryId
+          in: path
+          description:  itineraryId codes 
+          required: true
+          type: string
+          format: string
+        - name: userTocken
+          in: header
+          description:  userToken
+          required: false
+          type: string
+          format: string
+
+          
+      tags:
+        - GetBestPriceByitineraryId
+      responses:
+        200:
+          description: An array of Cruise objects 
+          schema:
+            $ref: '#/definitions/Object'
+        400:
+          description: You have sent a request which could not be understood
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        404:
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        405:
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        429:
+          description: You have requested this resource too often. Slow down
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        500:
+          description: An error occurred on the server. No further information is available
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        502:
+          description: BAD Gateway
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        503:
+          description: The service is temporarily unavailable
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        504:
+          description: GateWay Time Out
+          schema:
+            $ref: '#/definitions/ErrorObject'
+            
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/ErrorObject'
+
+definitions:
+  OfferId:
+    type: object
+    properties:
+      offerCode:
+        type: string
+      offerName:
+        type: string
+  Price:
+    type: object
+    properties:
+      price:
+        type: string
+      tax:
+        type: string
+      offerIds:
+        type: array
+        items:
+          $ref: '#/definitions/OfferId'
+  Categories:
+    type: object
+    properties:
+      categoryId:
+        type: string
+      categoryName:
+        type: string
+      displayOrder:
+        type: string
+      price:
+        type: array
+        items:
+          $ref: '#/definitions/Price'
+  RoomType:
+    type: object
+    properties:
+      roomId:
+        type: string
+      name:
+        type: string
+      displayOrder:
+        type: string
+      categories:
+        type: array
+        items:
+           $ref: '#/definitions/Categories'
+  Fare:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      flightRequired:
+        type: boolean
+      roomType:
+        type: array
+        items:
+          $ref: '#/definitions/RoomType'
+          
+  PortCharges:
+    type: object
+    properties:
+      adultAmount:
+        type: string
+      childAmount:
+        type: string
+      infantAmount:
+        type: string
+        
+  ServiceCharges:
+    type: object
+    properties:
+      currency:
+        type: string
+      adultAmount:
+        type: string
+      childAmount:
+        type: string
+      
+          
+  Cruise: 
+    type: object
+    properties:
+      arriveDate:
+        type: string
+      departDate:
+        type: string
+      cruiseID:
+        type: string
+      fare:
+        type: array
+        items:
+          $ref: "#/definitions/Fare"
+      portCharges:
+        type: array
+        items:
+          $ref: "#/definitions/PortCharges"
+      serviceCharges:
+        type: array
+        items:
+          $ref: "#/definitions/ServiceCharges"
+          
+  Data:
+    type: object
+    properties:
+      type:
+        type: string
+      id:
+        type: string
+      attributes:
+        $ref: '#/definitions/Cruise'
+  Object:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Data'
+  ErrorObject:
+    type: object
+    properties:
+      status:
+        type: string
+        description : This corresponds to the HTTP status code
+      title:
+        type: string
+        description : This corresponds to the HTTP status code
+        
+      description:
+        type: string
+        description : This corresponds to the HTTP status code
+
+
+		  
+		       
