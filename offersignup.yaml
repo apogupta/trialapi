@@ -1,0 +1,140 @@
+swagger: '2.0'
+info:
+  title: Offer SignUP
+  description: Sign up for offers
+  version: v1
+host: mocktarget.apigee.com
+schemes:
+  - https
+basePath: /offer_signup
+produces:
+  - application/json
+paths:
+  /{brand}/offerSignup:
+    post:
+      summary: SignUP for offer Email
+      description: >
+        The offer Signup endpoint enable users for getting the regular Emails
+        for offers . Users will get sign up for offers by providing their Email
+        address . 
+      parameters:
+        - name: country
+          in: header
+          description: Mandatory country parameter #Sample value US.
+          required: true
+          type: string
+          format: string
+        - name: locale
+          in: header
+          description: Mandatory locale parameter #Sample value en_us.
+          required: true
+          type: string
+          format: string
+        - name: brand
+          in: path
+          description: Mandatory brand parameter #Sample value HAL.
+          required: true
+          type: string
+          format: string
+        - name: submitData
+          in: body
+          description: this takes emal address , First Name, Last Name, destination 
+          required: true
+          schema: 
+            $ref: '#/definitions/DataSubmitObject'
+      tags:
+        - offerSignup
+      responses:
+        '200':
+          description: Registration for offers Sign up.
+          schema:
+            $ref: '#/definitions/Object'
+        '201':
+          description: 	Successful  creation and would return the same request object returned byserver as a confirmation.
+          schema:
+            $ref: '#/definitions/Object'
+        '400':
+          description: You have sent a request which could not be understood
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        '404':
+          description: Resource Not found
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        '405':
+          description: Method Not Allowed
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        '502':
+          description: An error occurred on the server.Bad Gateway
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        '504':
+          description: An error occurred on the server.GateWay Timeout
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        '500':
+          description: An error occurred on the server. No further information is available
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        '503':
+          description: The service is temporarily unavailable
+          schema:
+            $ref: '#/definitions/ErrorObject'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/ErrorObject'
+definitions:
+  DataSubmitObject:
+  
+    type: object
+    required: 
+      - Email
+    properties:
+      Email:
+        type: string
+      firstName:
+        type: string
+        
+      lastName:
+        type: string
+       
+      destination:
+        type: string
+   
+  ErrorObject:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
+        
+  SuccessObject:
+    type: object
+    properties:
+      message:
+        type: string
+      fields:
+        type: string
+  Data:
+    type: object
+    properties:
+      type:
+        type: string
+      id:
+        type: string
+      attributes:
+        $ref: '#/definitions/SuccessObject'
+  Object:
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Data'
+          
